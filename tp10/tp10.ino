@@ -79,7 +79,16 @@ void setup() {
   pinMode(BTN, BTNTYPE);
   pinMode(BTNALARMA, BTNTYPE);
 
+  Timer1.pause();
+  Timer1.setPeriod(2000000); // in microseconds. Ej: 500000 = 500 milisec
+  Timer1.setMode(TIMER_CH1,TIMER_OUTPUT_COMPARE);
+  Timer1.setCompare(TIMER_CH1, 1); // Interrupts on overflow
+  Timer1.attachInterrupt(TIMER_CH1, interruptTimer);
+  Timer1.refresh();
+ 
+
   Serial.begin(9600);
+ 
 }
 
 void loop() {
@@ -88,12 +97,35 @@ void loop() {
 
 switch (estado) {
     case 1:
-      digitalWrite(VERDE, PRENDIDO);
+      digitalWrite(ROJO, APAGADOLED);
+      digitalWrite(AMARILLO, APAGADOLED);
+      digitalWrite(VERDE, PRENDIDOLED);
 
       if (btnState == PRENDIDOBTN){
         estado = 2;
       }
       break;
+      
+    case 2:
+     Timer1.resume();
   }
 
+}
+
+void BtnPressed(){
+  digitalWrite(VERDE, APAGADOLED);
+  digitalWrite(AMARILLO, PRENDIDOLED);
+  Timer1.pause();
+  Timer1.setPeriod(5000000); // in microseconds. Ej: 500000 = 500 milisec
+  Timer1.refresh();
+  Timer1.resume();
+  digitalWrite(AMARILLO, APAGADOLED);
+  digitalWrite(ROJO, PRENDIDOLED);
+  Timer1.pause();
+  Timer1.setPeriod(2000000); // in microseconds. Ej: 500000 = 500 milisec
+  Timer1.refresh();
+  Timer1.resume();
+  digitalWrite(AMARILLO, PRENDIDOLED);
+  estado = 1;
+  Timer1.pause();
 }

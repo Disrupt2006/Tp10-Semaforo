@@ -68,7 +68,7 @@
 
 int btnState;
 int btnAlarmaState;
-int estado = 1;
+int estado;
 
 void setup() {
   pinMode(VERDE, OUTPUT);
@@ -79,12 +79,18 @@ void setup() {
   pinMode(BTN, BTNTYPE);
   pinMode(BTNALARMA, BTNTYPE);
 
+  attachInterrupt(BTNALARMA, Alarma, CHANGE);
+
+   /*
   Timer1.pause();
   Timer1.setPeriod(2000000); // in microseconds. Ej: 500000 = 500 milisec
   Timer1.setMode(TIMER_CH1,TIMER_OUTPUT_COMPARE);
   Timer1.setCompare(TIMER_CH1, 1); // Interrupts on overflow
-  Timer1.attachInterrupt(TIMER_CH1, interruptTimer);
+  Timer1.attachInterrupt(TIMER_CH1, BtnPressed);
   Timer1.refresh();
+*/
+
+  estado = 1;
  
 
   Serial.begin(9600);
@@ -100,18 +106,33 @@ switch (estado) {
       digitalWrite(ROJO, APAGADOLED);
       digitalWrite(AMARILLO, APAGADOLED);
       digitalWrite(VERDE, PRENDIDOLED);
-
+      
       if (btnState == PRENDIDOBTN){
         estado = 2;
+        Serial.print(estado);
+
+     if (BTNALARMA == PRENDIDOBTN){
+       digitalWrite(VERDE, APAGADOLED);
+       estado = 3;
+       Serial.print(estado);
+     }
       }
       break;
       
     case 2:
      Timer1.resume();
-  }
+     break;
 
+    case 3:
+     Alarma();
+
+  }
 }
 
+void Alarma(){
+  digitalWrite(BUZZER, HIGH);
+}
+/*
 void BtnPressed(){
   digitalWrite(VERDE, APAGADOLED);
   digitalWrite(AMARILLO, PRENDIDOLED);
@@ -128,4 +149,4 @@ void BtnPressed(){
   digitalWrite(AMARILLO, PRENDIDOLED);
   estado = 1;
   Timer1.pause();
-}
+} */

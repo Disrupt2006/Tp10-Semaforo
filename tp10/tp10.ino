@@ -1,4 +1,5 @@
-#define PLACA 2
+#define PLACA 4
+
 
 #if PLACA == 1
   #define VERDE PB7
@@ -85,7 +86,7 @@ void setup() {
   Timer1.pause();
   Timer1.setPeriod(2000000); // in microseconds. Ej: 500000 = 500 milisec
   Timer1.setMode(TIMER_CH1,TIMER_OUTPUT_COMPARE);
-  Timer1.setCompare(TIMER_CH1, 1); // Interrupts on overflow
+  Timer1.setCompare(TIMER_CH1, -1); // Interrupts on overflow
   Timer1.attachInterrupt(TIMER_CH1, BtnPressed);
   Timer1.refresh();
   Timer1.resume();
@@ -98,23 +99,43 @@ void setup() {
 void loop() {
   btnState = digitalRead(BTN);
   btnAlarmaState = digitalRead(BTNALARMA);
-
-switch (estado) {
+  switch (estado) {
     case 1:
       digitalWrite(ROJO, APAGADOLED);
       digitalWrite(AMARILLO, APAGADOLED);
       digitalWrite(VERDE, PRENDIDOLED);
+
+      if (btnState == APAGADOBTN){
+       Timer1.pause();
+       Timer1.setPeriod(500000); // in microseconds. Ej: 500000 = 500 milisec
+       Timer1.refresh();
+       Timer1.resume();
+      }
       
-      if (btnState == PRENDIDOBTN){
+     /* if (btnState == PRENDIDOBTN){
         estado = 2;
         Serial.print("dos");
         digitalWrite(BUZZER, HIGH);
-        
+      }        
 
      if (BTNALARMA == PRENDIDOBTN){
        digitalWrite(VERDE, APAGADOLED);
        estado = 3;
        Serial.print(estado);
+     } */
 
+     break;
+
+     case 2:
+     digitalWrite(ROJO, PRENDIDOLED);
+     digitalWrite(AMARILLO, APAGADOLED);
+     digitalWrite(VERDE, APAGADOLED);
+     break;
+   }
  }
-  }
+
+ void BtnPressed(){
+  digitalWrite(AMARILLO, PRENDIDOLED);
+  digitalWrite(VERDE, APAGADOLED);
+  estado = 2;
+ }

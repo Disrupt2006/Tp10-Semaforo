@@ -87,9 +87,18 @@ void setup() {
   Timer1.setPeriod(2000000); // in microseconds. Ej: 500000 = 500 milisec
   Timer1.setMode(TIMER_CH1,TIMER_OUTPUT_COMPARE);
   Timer1.setCompare(TIMER_CH1, -1); // Interrupts on overflow
-  Timer1.attachInterrupt(TIMER_CH1, BtnPressed);
+  Timer1.attachInterrupt(TIMER_CH1, Hola);
   Timer1.refresh();
   Timer1.resume();
+ 
+
+  Timer2.pause();
+  Timer2.setPeriod(5000000);
+  Timer2.setMode(TIMER_CH1,TIMER_OUTPUT_COMPARE);
+  Timer2.setCompare(TIMER_CH1, -1); // Interrupts on overflow
+  Timer2.attachInterrupt(TIMER_CH1, Hola2);
+  Timer2.refresh();
+  Timer2.resume();
 
   estado = 1;
   Serial.begin(9600);
@@ -99,43 +108,30 @@ void setup() {
 void loop() {
   btnState = digitalRead(BTN);
   btnAlarmaState = digitalRead(BTNALARMA);
+  
   switch (estado) {
     case 1:
       digitalWrite(ROJO, APAGADOLED);
       digitalWrite(AMARILLO, APAGADOLED);
       digitalWrite(VERDE, PRENDIDOLED);
 
-      if (btnState == APAGADOBTN){
-       Timer1.pause();
-       Timer1.setPeriod(500000); // in microseconds. Ej: 500000 = 500 milisec
-       Timer1.refresh();
-       Timer1.resume();
-      }
-      
-     /* if (btnState == PRENDIDOBTN){
-        estado = 2;
-        Serial.print("dos");
-        digitalWrite(BUZZER, HIGH);
-      }        
-
-     if (BTNALARMA == PRENDIDOBTN){
-       digitalWrite(VERDE, APAGADOLED);
-       estado = 3;
-       Serial.print(estado);
-     } */
-
-     break;
-
-     case 2:
-     digitalWrite(ROJO, PRENDIDOLED);
-     digitalWrite(AMARILLO, APAGADOLED);
-     digitalWrite(VERDE, APAGADOLED);
-     break;
-   }
+      Timer1.refresh();
+      Timer1.resume();
+      Timer2.refresh();
+      Timer2.resume();
+      break;
+ }
+ 
  }
 
- void BtnPressed(){
-  digitalWrite(AMARILLO, PRENDIDOLED);
+ void Hola(){
   digitalWrite(VERDE, APAGADOLED);
-  estado = 2;
+  digitalWrite(AMARILLO, PRENDIDOLED);
+  digitalWrite(ROJO, APAGADOLED);
+ }
+ 
+ void Hola2(){
+  digitalWrite(VERDE, APAGADOLED);
+  digitalWrite(AMARILLO, APAGADOLED);
+  digitalWrite(ROJO, PRENDIDOLED);
  }

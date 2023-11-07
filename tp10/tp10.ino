@@ -1,4 +1,4 @@
-#define PLACA 4
+#define PLACA 2
 
 
 #if PLACA == 1
@@ -19,7 +19,7 @@
 #endif
 
 #if PLACA == 2
-  #define VERDE PA7
+  #define VERDE PA10
   #define AMARILLO PB5
   #define ROJO PB6
   #define BUZZER PA3
@@ -71,6 +71,7 @@ int btnState;
 int btnAlarmaState;
 int estado;
 
+
 void setup() {
   pinMode(VERDE, OUTPUT);
   pinMode(AMARILLO, OUTPUT);
@@ -88,8 +89,6 @@ void setup() {
   Timer1.setMode(TIMER_CH1,TIMER_OUTPUT_COMPARE);
   Timer1.setCompare(TIMER_CH1, -1); // Interrupts on overflow
   Timer1.attachInterrupt(TIMER_CH1, Hola);
-  Timer1.refresh();
-  Timer1.resume();
  
 
   Timer2.pause();
@@ -97,30 +96,28 @@ void setup() {
   Timer2.setMode(TIMER_CH1,TIMER_OUTPUT_COMPARE);
   Timer2.setCompare(TIMER_CH1, -1); // Interrupts on overflow
   Timer2.attachInterrupt(TIMER_CH1, Hola2);
-  Timer2.refresh();
-  Timer2.resume();
 
   estado = 1;
   Serial.begin(9600);
- 
 }
 
 void loop() {
   btnState = digitalRead(BTN);
   btnAlarmaState = digitalRead(BTNALARMA);
-  
-  switch (estado) {
-    case 1:
-      digitalWrite(ROJO, APAGADOLED);
-      digitalWrite(AMARILLO, APAGADOLED);
-      digitalWrite(VERDE, PRENDIDOLED);
 
+      digitalWrite(ROJO, PRENDIDOLED);
+      digitalWrite(AMARILLO, APAGADOLED);
+      digitalWrite(VERDE, APAGADOLED);  
+        
+ /* switch (estado) {
+    case 1:
+
+      Timer1.pause();
       Timer1.refresh();
-      Timer1.resume();
-      Timer2.refresh();
-      Timer2.resume();
+      Timer1.resume();         
+      
       break;
- }
+ } */
  
  }
 
@@ -128,7 +125,7 @@ void loop() {
   digitalWrite(VERDE, APAGADOLED);
   digitalWrite(AMARILLO, PRENDIDOLED);
   digitalWrite(ROJO, APAGADOLED);
- }
+  }
  
  void Hola2(){
   digitalWrite(VERDE, APAGADOLED);
